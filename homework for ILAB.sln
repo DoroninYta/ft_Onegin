@@ -1,31 +1,146 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "homework for ILAB", "homework for ILAB\homework for ILAB.vcxproj", "{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Debug|x64.ActiveCfg = Debug|x64
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Debug|x64.Build.0 = Debug|x64
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Debug|x86.ActiveCfg = Debug|Win32
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Debug|x86.Build.0 = Debug|Win32
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Release|x64.ActiveCfg = Release|x64
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Release|x64.Build.0 = Release|x64
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Release|x86.ActiveCfg = Release|Win32
-		{DA63D4AF-D26B-43D2-B688-96A4352BFF4B}.Release|x86.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {74C63E08-7841-4C0A-B68D-A2595EC6C628}
-	EndGlobalSection
-EndGlobal
+#define _CRT_SECURE_NO_WARNINGS
+
+#include<stdio.h>
+#include<string.h>
+#include < assert.h >
+
+//read file and transmit text from file into array
+int ft_file_reader_and_create_array_string(char* string_from_file, FILE* file_reader)
+{
+	//assert(string_from_file);
+	//assert(file_reader);
+
+	int f = 0;
+	int i = 0;
+	while (f != EOF)
+	{
+		f = fgetc(file_reader);
+		string_from_file[i] = f;
+		i++;
+	}
+	return 0;
+}
+
+
+//create array of pointers and assigns every pointer new line
+int ft_create_array_of_pointers_from_string(char* string_from_file, char** array_pointers)
+{
+	//assert(string_from_file);
+	//assert(array_pointers);
+
+	int i = 0;
+	array_pointers[0] = string_from_file;
+	int number_of_pointer = 1;
+	while (string_from_file[i] != '\0')
+	{
+		if (string_from_file[i] == '\n')                
+		{
+			string_from_file[i] = '\0';
+			i++;
+			array_pointers[number_of_pointer] = string_from_file + i;
+			number_of_pointer++;
+		}
+		i++;
+	}
+	return 0;
+}
+//strcmp
+int ft_string_sort(char* string1, char* string2)     
+{
+	int a = 0;
+	int b = 0;
+	while ((string1[a] != '\0' && string1[a] != '\n') && (string2[b] != '\0' && string2[b] != '\n') && \
+		string1[a] == string2[b])
+	{
+		a++;
+		b++;
+	}
+	return (int)string1[a] - (int)string2[b] ;
+}
+
+
+//transposition pointers
+int ft_string_change_by_pointers(char** array_pointer, int i)
+{
+	assert(array_pointer);
+
+	char* z = 0;
+	z = array_pointer[i];
+	array_pointer[i] = array_pointer[i + 1];
+	array_pointer[i + 1] = z;
+	return 0;
+}
+
+
+//my buble sort
+int ft_string_replacement_by_pointers(char** array_pointer) // алгоритм сортировки пузырьком ( вставками, слиянием )
+															// qsort - Ваня
+{
+	assert(array_pointer);
+
+	int i = 0;
+	int count_of_replacement = 1;
+	int sort_res = 0;
+	while (count_of_replacement != 0)
+	{
+		count_of_replacement = 0;
+		i = 0;
+			while (array_pointer[i + 1] != NULL)
+			{
+				sort_res = ft_string_sort(array_pointer[i], array_pointer[i + 1]);
+
+				if (sort_res >= 0)
+				{
+					ft_string_change_by_pointers(array_pointer, i);
+					count_of_replacement++;
+				}
+				i++;
+			}
+	}
+	return 0;
+}
+
+int ft_file_writer(FILE* file_write, char** array_pointer)
+{
+	assert(file_write);
+	assert(array_pointer);
+
+	int i = 0;
+	while (array_pointer[i] != NULL)
+	{
+		fprintf(file_write, "%s\n\n\n", array_pointer[i]);
+		i++;
+	}
+	return 0;
+}
+//
+int ft_Onegin(char* string_text_from_file, char** array_pointer_on_new_line, FILE* file_read, FILE* file_write)
+{
+	assert(string_text_from_file);
+	assert(array_pointer_on_new_line);
+	assert(file_read);
+	assert(file_write);
+
+	ft_file_reader_and_create_array_string(string_text_from_file, file_read);
+	ft_create_array_of_pointers_from_string(string_text_from_file, array_pointer_on_new_line);
+	ft_string_replacement_by_pointers(array_pointer_on_new_line);
+	ft_file_writer(file_write, array_pointer_on_new_line);
+
+	return 0;
+
+
+}
+
+int main() {
+	char array[1000] = { 0 };
+	char* array_pointer[1000] = { 0 };
+	FILE* file = fopen("text.txt", "r");
+	FILE* stream = fopen("file_result.txt", "w+");
+	
+	ft_Onegin(array, array_pointer, file, stream);
+	fclose(file);
+	fclose(stream);
+	
+	return 0;
+
+}
