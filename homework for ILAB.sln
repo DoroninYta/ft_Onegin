@@ -1,8 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include<stdio.h>
-#include<string.h>
-#include < assert.h >
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
 
 //read file and transmit text from file into array
 int ft_file_reader_and_create_array_string(char* string_from_file, FILE* file_reader)
